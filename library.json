@@ -1,0 +1,19 @@
+{
+  "name": "OtamClient",
+  "version": "1.0.0",
+  "keywords": "esp32, otam, otam-client",
+  "description": "Library to connect to OTAM server and update firmware",
+  "authors": {
+    "name": "Steve Hetzel",
+    "maintainer": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/shetzel84/otam-client"
+  },
+  "homepage": "https://bitbucket.org/shetzel84/otam-client",
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": ["espressif32"],
+  "headers": ["src/OtamClient.h"]
+}
