@@ -254,7 +254,7 @@ void OtamClient::doFirmwareUpdate() {
 
             // Restart the device
             // ESP.restart();
-            esp_deep_sleep_start();
+            // esp_deep_sleep_start();
         });
 
         otamUpdater->onOtaError([this](String error) {
