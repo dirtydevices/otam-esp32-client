@@ -2,12 +2,15 @@
 #define OTAM_UTILS_H
 
 #include <Arduino.h>
-#include <cJSON.h>
 
 class OtamUtils {
    public:
-    static cJSON* parseJSON(String json);
-    static String getJSONValue(cJSON* json, String key);
+    static String getJSONValue(const char* json, const char* key);
+    static int getJSONIntValue(const char* json, const char* key);
+    static bool hasJSONKey(const char* json, const char* key);
+    static String createJSONObject(const char* key, const char* value);
+    static String createJSONObject(const char* key, int value);
+    static String mergeJSONObjects(const char* obj1, const char* obj2);
 };
 
 #endif  // OTAM_UTILS_H

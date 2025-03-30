@@ -1,27 +1,26 @@
 #include "internal/OtamUtils.h"
+#include "internal/LightJson.h"
 
-cJSON* OtamUtils::parseJSON(String json) {
-    cJSON* parsed = cJSON_Parse(json.c_str());
-
-    if (parsed == NULL) {
-        const char* error_ptr = cJSON_GetErrorPtr();
-        // if (error_ptr != NULL) {
-        //     Serial.println("Error before: " + String(error_ptr));
-        // }
-        return NULL;
-    }
-
-    return parsed;
+String OtamUtils::getJSONValue(const char* json, const char* key) {
+    return LightJson::getValue(json, key);
 }
 
-String OtamUtils::getJSONValue(cJSON* json, String key) {
-    cJSON* item = cJSON_GetObjectItemCaseSensitive(json, key.c_str());
+int OtamUtils::getJSONIntValue(const char* json, const char* key) {
+    return LightJson::getIntValue(json, key);
+}
 
-    if (cJSON_IsString(item) && (item->valuestring != NULL)) {
-        return String(item->valuestring);
-    } else if (cJSON_IsNumber(item)) {
-        return String(item->valueint);  // Convert the integer to a string
-    }
+bool OtamUtils::hasJSONKey(const char* json, const char* key) {
+    return LightJson::hasKey(json, key);
+}
 
-    return String("");
+String OtamUtils::createJSONObject(const char* key, const char* value) {
+    return LightJson::createObject(key, value);
+}
+
+String OtamUtils::createJSONObject(const char* key, int value) {
+    return LightJson::createObject(key, value);
+}
+
+String OtamUtils::mergeJSONObjects(const char* obj1, const char* obj2) {
+    return LightJson::mergeObjects(obj1, obj2);
 }
