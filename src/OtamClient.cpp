@@ -104,18 +104,18 @@ boolean OtamClient::hasPendingUpdate() {
 
         if (response.httpCode == 200) {
             // Get the device status from the response
-            String deviceStatus = OtamUtils::getJSONValue(response.payload.c_str(), "deviceStatus");
+            String deviceStatus = LightJson::getValue(response.payload.c_str(), "deviceStatus");
 
             // Check if the device status is UPDATE_PENDING
             if (deviceStatus.equals("UPDATE_PENDING")) {
                 firmwareUpdateValues.firmwareFileId =
-                    OtamUtils::getJSONIntValue(response.payload.c_str(), "firmwareFileId");
+                    LightJson::getIntValue(response.payload.c_str(), "firmwareFileId");
                 firmwareUpdateValues.firmwareId =
-                    OtamUtils::getJSONIntValue(response.payload.c_str(), "firmwareId");
+                    LightJson::getIntValue(response.payload.c_str(), "firmwareId");
                 firmwareUpdateValues.firmwareName =
-                    OtamUtils::getJSONValue(response.payload.c_str(), "firmwareName");
+                    LightJson::getValue(response.payload.c_str(), "firmwareName");
                 firmwareUpdateValues.firmwareVersion =
-                    OtamUtils::getJSONValue(response.payload.c_str(), "firmwareVersion");
+                    LightJson::getValue(response.payload.c_str(), "firmwareVersion");
 
                 return true;
             }
@@ -207,17 +207,16 @@ void OtamClient::doFirmwareUpdate() {
             Serial.println("Firmware version: " + firmwareUpdateValues.firmwareVersion);
 
             // Create JSON objects for each field
-            String statusObj = OtamUtils::createJSONObject("deviceStatus", "UPDATE_SUCCESS");
-            String fileIdObj =
-                OtamUtils::createJSONObject("firmwareFileId", firmwareUpdateValues.firmwareFileId);
-            String firmwareIdObj = OtamUtils::createJSONObject("firmwareId", firmwareUpdateValues.firmwareId);
+            String statusObj = LightJson::createObject("deviceStatus", "UPDATE_SUCCESS");
+            String fileIdObj = LightJson::createObject("firmwareFileId", firmwareUpdateValues.firmwareFileId);
+            String firmwareIdObj = LightJson::createObject("firmwareId", firmwareUpdateValues.firmwareId);
             String versionObj =
-                OtamUtils::createJSONObject("firmwareVersion", firmwareUpdateValues.firmwareVersion.c_str());
+                LightJson::createObject("firmwareVersion", firmwareUpdateValues.firmwareVersion.c_str());
 
             // Merge all objects
-            String payload = OtamUtils::mergeJSONObjects(statusObj.c_str(), fileIdObj.c_str());
-            payload = OtamUtils::mergeJSONObjects(payload.c_str(), firmwareIdObj.c_str());
-            payload = OtamUtils::mergeJSONObjects(payload.c_str(), versionObj.c_str());
+            String payload = LightJson::mergeObjects(statusObj.c_str(), fileIdObj.c_str());
+            payload = LightJson::mergeObjects(payload.c_str(), firmwareIdObj.c_str());
+            payload = LightJson::mergeObjects(payload.c_str(), versionObj.c_str());
 
             // Update device on the server
             OtamHttpResponse response = OtamHttp::post(otamDevice->deviceStatusUrl, payload);
