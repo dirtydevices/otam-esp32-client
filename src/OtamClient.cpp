@@ -103,28 +103,22 @@ boolean OtamClient::hasPendingUpdate() {
         OtamHttpResponse response = OtamHttp::get(otamDevice->deviceStatusUrl);
 
         if (response.httpCode == 200) {
-            // Parse the response
-            cJSON* parsed = OtamUtils::parseJSON(response.payload);
-
             // Get the device status from the response
-            String deviceStatus = OtamUtils::getJSONValue(parsed, "deviceStatus");
+            String deviceStatus = LightJson::getValue(response.payload.c_str(), "deviceStatus");
 
             // Check if the device status is UPDATE_PENDING
-            if (deviceStatus == "UPDATE_PENDING") {
+            if (deviceStatus.equals("UPDATE_PENDING")) {
                 firmwareUpdateValues.firmwareFileId =
-                    OtamUtils::getJSONValue(parsed, "firmwareFileId").toInt();
-                firmwareUpdateValues.firmwareId = OtamUtils::getJSONValue(parsed, "firmwareId").toInt();
-                firmwareUpdateValues.firmwareName = OtamUtils::getJSONValue(parsed, "firmwareName");
-                firmwareUpdateValues.firmwareVersion = OtamUtils::getJSONValue(parsed, "firmwareVersion");
-                // Serial.println("Firmware update file ID: " + String(firmwareUpdateValues.firmwareFileId));
-                // Serial.println("Firmware update ID: " + String(firmwareUpdateValues.firmwareId));
-                // Serial.println("Firmware update name: " + firmwareUpdateValues.firmwareName);
-                // Serial.println("Firmware update version: " + firmwareUpdateValues.firmwareVersion);
-                delete parsed;
+                    LightJson::getIntValue(response.payload.c_str(), "firmwareFileId");
+                firmwareUpdateValues.firmwareId =
+                    LightJson::getIntValue(response.payload.c_str(), "firmwareId");
+                firmwareUpdateValues.firmwareName =
+                    LightJson::getValue(response.payload.c_str(), "firmwareName");
+                firmwareUpdateValues.firmwareVersion =
+                    LightJson::getValue(response.payload.c_str(), "firmwareVersion");
+
                 return true;
             }
-            // Serial.println("No firmware update available");
-            delete parsed;
         }
     }
 
@@ -205,8 +199,6 @@ void OtamClient::doFirmwareUpdate() {
         otamUpdater->onOtaSuccess([this]() {
             Serial.println("OTAM: OTA success callback called");
 
-            // Serial.println("Notifying OTAM server of successful update");
-
             Serial.println("OTAM: Updating device status on server with the following values:");
             Serial.println("POST Url: " + otamDevice->deviceStatusUrl);
             Serial.println("Firmware file ID: " + String(firmwareUpdateValues.firmwareFileId));
@@ -214,13 +206,20 @@ void OtamClient::doFirmwareUpdate() {
             Serial.println("Firmware name: " + firmwareUpdateValues.firmwareName);
             Serial.println("Firmware version: " + firmwareUpdateValues.firmwareVersion);
 
+            // Create JSON objects for each field
+            String statusObj = LightJson::createObject("deviceStatus", "UPDATE_SUCCESS");
+            String fileIdObj = LightJson::createObject("firmwareFileId", firmwareUpdateValues.firmwareFileId);
+            String firmwareIdObj = LightJson::createObject("firmwareId", firmwareUpdateValues.firmwareId);
+            String versionObj =
+                LightJson::createObject("firmwareVersion", firmwareUpdateValues.firmwareVersion.c_str());
+
+            // Merge all objects
+            String payload = LightJson::mergeObjects(statusObj.c_str(), fileIdObj.c_str());
+            payload = LightJson::mergeObjects(payload.c_str(), firmwareIdObj.c_str());
+            payload = LightJson::mergeObjects(payload.c_str(), versionObj.c_str());
+
             // Update device on the server
-            OtamHttpResponse response =
-                OtamHttp::post(otamDevice->deviceStatusUrl,
-                               "{\"deviceStatus\":\"UPDATE_SUCCESS\",\"firmwareFileId\":" +
-                                   String(firmwareUpdateValues.firmwareFileId) +
-                                   ",\"firmwareId\":" + String(firmwareUpdateValues.firmwareId) +
-                                   ",\"firmwareVersion\":\"" + firmwareUpdateValues.firmwareVersion + "\"}");
+            OtamHttpResponse response = OtamHttp::post(otamDevice->deviceStatusUrl, payload);
 
             Serial.println("OTAM: Post Response - " + response.payload);
 
