@@ -68,8 +68,8 @@ void OtamClient::initialize() {
             FirmwareUpdateValues firmwareUpdateSuccessValues;
             firmwareUpdateSuccessValues.firmwareFileId = OtamStore::readFirmwareUpdateFileIdFromStore();
             firmwareUpdateSuccessValues.firmwareId = OtamStore::readFirmwareUpdateIdFromStore();
-            firmwareUpdateValues.firmwareName = OtamStore::readFirmwareUpdateNameFromStore();
-            firmwareUpdateValues.firmwareVersion = OtamStore::readFirmwareUpdateVersionFromStore();
+            firmwareUpdateSuccessValues.firmwareName = OtamStore::readFirmwareUpdateNameFromStore();
+            firmwareUpdateSuccessValues.firmwareVersion = OtamStore::readFirmwareUpdateVersionFromStore();
 
             // Clear the firmware update status
             OtamStore::writeFirmwareUpdateStatusToStore("NONE");
