@@ -1,5 +1,5 @@
 #include "internal/OtamHttp.h"
-#include <HttpClient.h>
+#include <HTTPClient.h>
 
 String OtamHttp::apiKey;
 
