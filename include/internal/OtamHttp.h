@@ -1,7 +1,7 @@
 #ifndef OTAM_HTTP_H
 #define OTAM_HTTP_H
 
-#include <HttpClient.h>
+#include <HTTPClient.h>
 
 struct OtamHttpResponse {
     int httpCode;
