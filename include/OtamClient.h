@@ -1,7 +1,7 @@
 #ifndef OTAM_CLIENT_H
 #define OTAM_CLIENT_H
 
-#include <HttpClient.h>
+#include <HTTPClient.h>
 #include "internal/OtamConfig.h"
 #include "internal/OtamDevice.h"
 #include "internal/OtamHttp.h"
