@@ -36,13 +36,14 @@ void OtamUpdater::runESP32Update(HTTPClient& http) {
     // Serial.printf("Free heap: %u\n", ESP.getFreeHeap());
     // Serial.printf("Total heap: %u\n", ESP.getHeapSize());
     // Serial.printf("Free PSRAM: %u\n", ESP.getFreePsram());
-    // Serial.println("Starting OTA Update...");
+    Serial.println("Starting OTA Update...");
     // Serial.println("Content Length: " + String(contentLength));
 
-    // if (contentLength <= 0) {
-    //     otaErrorCallback("Content length is invalid");
-    //     return;
-    // }
+    if (contentLength <= 0) {
+        Serial.println("Invalid content length: " + String(contentLength));
+        // otaErrorCallback("Content length is invalid");
+        return;
+    }
 
     bool canBegin = Update.begin(contentLength);  // Initialize OTA process
     if (canBegin) {
@@ -57,20 +58,20 @@ void OtamUpdater::runESP32Update(HTTPClient& http) {
 
         // Write firmware data to flash
         size_t written = Update.writeStream(*client);
-        // Serial.println("Bytes written to flash: " + String(written));
+        Serial.println("Bytes written to flash: " + String(written));
 
-        // if (written != contentLength) {
-        //     Serial.println("Warning: Written bytes do not match content length.");
-        // }
+        if (written != contentLength) {
+            Serial.println("Warning: Written bytes do not match content length.");
+        }
 
         if (Update.end()) {
             // Download complete
             otaAfterDownloadCallback();
             if (Update.isFinished()) {
-                // Serial.println("OTA Update finished successfully.");
+                Serial.println("OTA Update finished successfully.");
                 otaSuccessCallback();  // Call success callback
             } else {
-                // Serial.println("OTA Update failed to complete.");
+                Serial.println("OTA Update failed to complete.");
                 otaErrorCallback("OTA Update did not finish, something went wrong!");
             }
         } else {
@@ -82,8 +83,8 @@ void OtamUpdater::runESP32Update(HTTPClient& http) {
             strcat(errorMessage, errorNum);
 
             // Print to Serial for more debugging info
-            // Serial.print("Detailed Error: ");
-            // Update.printError(Serial);  // Detailed error output
+            Serial.print("Detailed Error: ");
+            Update.printError(Serial);  // Detailed error output
 
             // Manually create human-readable error messages
             switch (Update.getError()) {
@@ -122,11 +123,11 @@ void OtamUpdater::runESP32Update(HTTPClient& http) {
                     break;
             }
 
-            // Serial.println(errorMessage);    // Print error message
+            Serial.println(errorMessage);    // Print error message
             otaErrorCallback(errorMessage);  // Send error callback
         }
     } else {
-        // Serial.println("Not enough space to begin OTA.");
+        Serial.println("Not enough space to begin OTA.");
         otaErrorCallback(ERROR_NOT_ENOUGH_SPACE);
     }
 }

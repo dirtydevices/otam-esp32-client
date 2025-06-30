@@ -257,7 +257,7 @@ void OtamClient::doFirmwareUpdate() {
         });
 
         otamUpdater->onOtaError([this](String error) {
-            // Serial.println("OTA error callback called");
+            Serial.println("OTA error callback called");
             updateStarted = false;
             if (otaErrorCallback) {
                 otaErrorCallback(firmwareUpdateValues, error);
