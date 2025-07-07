@@ -13,7 +13,10 @@
   },
   "homepage": "https://bitbucket.org/shetzel84/otam-client",
   "license": "MIT",
-  "frameworks": "*",
+  "frameworks": ["arduino"],
   "platforms": ["espressif32"],
-  "headers": ["src/OtamClient.h"]
+  "build": {
+    "srcDir": "src",
+    "includeDir": "include"
+  }
 }
