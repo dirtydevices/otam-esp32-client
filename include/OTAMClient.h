@@ -17,11 +17,11 @@ namespace OTAM {
         COUNT
     };
 
-    class Client : public EventEmitter<ClientEvent, static_cast<std::size_t>(ClientEvent::COUNT)> {
+    class OTAMClient : public EventEmitter<ClientEvent, static_cast<std::size_t>(ClientEvent::COUNT)> {
        public:
-        Client* GetClient(const OtamConfig& config);
+        OTAMClient* GetClient(const OtamConfig& config);
 
-        ~Client();
+        ~OTAMClient();
 
         // initialize the client
         int8_t init();
@@ -36,9 +36,9 @@ namespace OTAM {
         int8_t updateFirmware();
 
        private:
-        static Client* _instance;
+        static OTAMClient* _instance;
 
-        Client(const OtamConfig& config);
+        OTAMClient(const OtamConfig& config);
 
         Adapter* _adapter;
         Updater* _updater;
