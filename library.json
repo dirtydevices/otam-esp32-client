@@ -21,8 +21,8 @@
   },
   "dependencies": [
     {
-      "git": "https://github.com/dirtydevices/dirty_eventemitter.git",
-      "branch": "main"
+      "name": "dirty_eventemitter",
+      "version": "https://github.com/dirtydevices/dirty_eventemitter.git#main"
     }
   ]
 }
