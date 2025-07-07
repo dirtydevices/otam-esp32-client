@@ -1,7 +1,8 @@
 #pragma once
 
+#include <EventEmitter.hpp>
+
 #include "Adapter.h"
-#include "EventEmitter.h"
 #include "Updater.h"
 
 namespace OTAM {

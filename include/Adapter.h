@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#include "EventEmitter.h"
+#include <EventEmitter.hpp>
 
 namespace OTAM {
 

@@ -2,7 +2,7 @@
 
 #include <Update.h>
 
-#include "EventEmitter.h"
+#include <EventEmitter.hpp>
 
 // #include <functional>
 
